@@ -2,9 +2,6 @@
    STRONG THREADS AFRICA LTD — Design System & Styles
    ============================================================ */
 
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
-
 /* --- Design Tokens --- */
 :root {
   /* Colors */
@@ -191,6 +188,54 @@ input, textarea, select {
   margin: 0 auto;
 }
 
+/* --- Accessibility Helpers --- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: var(--space-md);
+  z-index: 10000;
+  background: var(--color-primary);
+  color: #fff;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: var(--space-md);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+.shake {
+  animation: shake 0.5s ease;
+}
+
 /* --- Animations --- */
 .reveal {
   opacity: 0;
@@ -244,6 +289,26 @@ input, textarea, select {
 .stagger-2 { transition-delay: 0.2s; }
 .stagger-3 { transition-delay: 0.3s; }
 .stagger-4 { transition-delay: 0.4s; }
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 
 /* --- Gradient Accents --- */
 .gradient-text {
@@ -325,13 +390,13 @@ input, textarea, select {
   color: var(--color-primary);
 }
 
-.nav-links {
+.primary-nav {
   display: flex;
   align-items: center;
   gap: var(--space-2xl);
 }
 
-.nav-links a {
+.primary-nav a {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--color-text-secondary);
@@ -339,7 +404,7 @@ input, textarea, select {
   position: relative;
 }
 
-.nav-links a::after {
+.primary-nav a::after {
   content: '';
   position: absolute;
   bottom: -4px;
@@ -351,13 +416,13 @@ input, textarea, select {
   border-radius: 1px;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.primary-nav a:hover,
+.primary-nav a.active {
   color: var(--color-text);
 }
 
-.nav-links a:hover::after,
-.nav-links a.active::after {
+.primary-nav a:hover::after,
+.primary-nav a.active::after {
   width: 100%;
 }
 
@@ -1033,7 +1098,11 @@ input, textarea, select {
 
 .testimonials-wrapper {
   margin-top: var(--space-3xl);
+  margin-inline: auto;
+  max-width: 960px;
   position: relative;
+  overflow: hidden;
+  padding-inline: var(--space-xs);
 }
 
 .testimonials-track {
@@ -1043,12 +1112,12 @@ input, textarea, select {
 }
 
 .testimonial-card {
-  min-width: calc(33.333% - var(--space-xl) * 2 / 3);
+  flex: 0 0 calc(33.333% - var(--space-xl) * 2 / 3);
+  min-width: 0;
   background: var(--color-surface);
   border: 1px solid var(--color-surface-border);
   border-radius: var(--radius-lg);
   padding: var(--space-2xl);
-  flex-shrink: 0;
   transition: all var(--transition-base);
 }
 
@@ -1094,9 +1163,12 @@ input, textarea, select {
 }
 
 .testimonial-avatar {
+  flex: 0 0 48px;
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  min-width: 0;
+  aspect-ratio: 1;
+  border-radius: 12px;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   display: flex;
   align-items: center;
@@ -1314,6 +1386,34 @@ input, textarea, select {
   resize: vertical;
 }
 
+.form-error {
+  margin-top: var(--space-sm);
+  font-size: 0.8rem;
+  color: var(--color-error);
+  min-height: 0;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.form-error:not(:empty) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.form-group input[aria-invalid="true"],
+.form-group textarea[aria-invalid="true"],
+.form-group select[aria-invalid="true"] {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.contact-socials-heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1524,61 +1624,11 @@ input, textarea, select {
 }
 
 /* ============================================================
-   MOBILE NAV OVERLAY
-   ============================================================ */
-.mobile-nav {
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  background: rgba(10, 10, 10, 0.98);
-  backdrop-filter: blur(20px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-xl);
-  opacity: 0;
-  visibility: hidden;
-  transition: all var(--transition-base);
-}
-
-.mobile-nav.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.mobile-nav a {
-  font-family: var(--font-heading);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--color-text-secondary);
-  transition: color var(--transition-fast);
-  transform: translateY(20px);
-  opacity: 0;
-}
-
-.mobile-nav.active a {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.mobile-nav a:nth-child(1) { transition-delay: 0.1s; }
-.mobile-nav a:nth-child(2) { transition-delay: 0.15s; }
-.mobile-nav a:nth-child(3) { transition-delay: 0.2s; }
-.mobile-nav a:nth-child(4) { transition-delay: 0.25s; }
-.mobile-nav a:nth-child(5) { transition-delay: 0.3s; }
-.mobile-nav a:nth-child(6) { transition-delay: 0.35s; }
-
-.mobile-nav a:hover {
-  color: var(--color-primary);
-}
-
-/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1024px) {
   .testimonial-card {
-    min-width: calc(50% - var(--space-xl) / 2);
+    flex-basis: calc(50% - var(--space-xl) / 2);
   }
 
   .footer-grid {
@@ -1604,14 +1654,65 @@ input, textarea, select {
     padding: var(--space-3xl) 0;
   }
 
-  /* Navigation */
-  .nav-links,
+  /* Navigation — primary nav becomes full-screen overlay */
   .header-cta {
     display: none;
   }
 
   .menu-toggle {
     display: flex;
+  }
+
+  .primary-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xl);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base), visibility var(--transition-base);
+  }
+
+  .primary-nav.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .primary-nav a {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: color var(--transition-fast), opacity var(--transition-base), transform var(--transition-base);
+  }
+
+  .primary-nav a::after {
+    display: none;
+  }
+
+  .primary-nav.active a {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .primary-nav a:nth-child(1) { transition-delay: 0.1s; }
+  .primary-nav a:nth-child(2) { transition-delay: 0.15s; }
+  .primary-nav a:nth-child(3) { transition-delay: 0.2s; }
+  .primary-nav a:nth-child(4) { transition-delay: 0.25s; }
+  .primary-nav a:nth-child(5) { transition-delay: 0.3s; }
+  .primary-nav a:nth-child(6) { transition-delay: 0.35s; }
+
+  .primary-nav a:hover,
+  .primary-nav a.active {
+    color: var(--color-primary);
   }
 
   /* Hero */
@@ -1675,7 +1776,7 @@ input, textarea, select {
 
   /* Testimonials */
   .testimonial-card {
-    min-width: 100%;
+    flex-basis: 100%;
   }
 
   /* Contact */
